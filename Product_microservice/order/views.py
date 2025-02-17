@@ -2,8 +2,6 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from rest_framework.permissions import IsAuthenticated
 from bson.objectid import ObjectId
 
 from .serializers import OrderAddSerializer
@@ -25,6 +23,19 @@ class OrderAddView(APIView):
         vd['product_price'] = product["price"]
         result = settings.ORDER_COLLECTION.insert_one(vd)
         vd['_id'] = str(result.inserted_id)
-        print(vd)
         return Response(data=vd, status=status.HTTP_201_CREATED)
 
+
+class OrderGetListView(APIView):
+
+    def get(self, request, user_id):
+        try:
+            orders = list(settings.ORDER_COLLECTION.find({"user_id": user_id}))
+
+            for order in orders:
+                order['_id'] = str(order['_id'])
+                order['user_id'] = str(order['user_id'])
+            return Response(data=orders, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
