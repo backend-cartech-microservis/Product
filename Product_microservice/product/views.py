@@ -16,9 +16,8 @@ class ProductAddView(APIView):
     def post(self, request):
         ser_data = self.serializer_class(data=request.data)
         ser_data.is_valid(raise_exception=True)
-        PRODUCT_COLLECTION = settings.MONGO_DB['product']
         print(ser_data.validated_data)
-        result = PRODUCT_COLLECTION.insert_one(ser_data.validated_data)
+        result = settings.PRODUCT_COLLECTION.insert_one(ser_data.validated_data)
         vd = ser_data.data
         vd['_id'] = str(result.inserted_id)
         return Response(data={"message": vd}, status=status.HTTP_201_CREATED)
