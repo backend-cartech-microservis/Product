@@ -108,6 +108,17 @@ MONGO_DB = MONGO_CLIENT["productdb"]
 ORDER_COLLECTION = MONGO_DB['order']
 PRODUCT_COLLECTION = MONGO_DB['product']
 
+# redis setting
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': "redis://127.0.0.1:6279/1",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
